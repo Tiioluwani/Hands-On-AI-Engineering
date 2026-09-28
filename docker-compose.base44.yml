@@ -1,0 +1,18 @@
+services:
+  web:
+    image: python:3.12-slim
+    working_dir: /app
+    volumes:
+      - ./ai_agents/personal_finance_agent:/app
+    ports:
+      - "3000:3000"
+    environment:
+      - BASE44_PUBLIC_HOST_SUFFIX=${BASE44_PUBLIC_HOST_SUFFIX:-}
+    command: ["sh", "-c", "pip install --no-cache-dir -r requirements.txt && streamlit run app.py --server.port 3000 --server.address 0.0.0.0 --server.headless true --server.enableCORS false --server.enableXsrfProtection false --server.fileWatcherType poll --browser.gatherUsageStats false"]
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:3000/_stcore/health').read()"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 60s
+    restart: on-failure
