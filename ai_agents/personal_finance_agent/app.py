@@ -90,6 +90,8 @@ def _render_sidebar() -> None:
                 st.metric("Total spending", f"${summary.get('total_spending', 0):,.2f}")
                 breakdown = summary.get("category_breakdown", {})
                 if breakdown:
+                    top_cat, top_val = next(iter(breakdown.items()))
+                    st.metric("Top spending category", top_cat, f"${top_val:,.2f}", delta_color="off")
                     st.caption("Category totals")
                     for cat, val in breakdown.items():
                         st.write(f"**{cat}:** ${val:,.2f}")
